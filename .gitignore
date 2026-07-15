@@ -13,7 +13,9 @@
 # Android build directories
 build/
 .gradle/
-gradle/
+
+# Note: the gradle/ directory itself (wrapper jar + version catalog) must stay
+# tracked, or a fresh clone / CI checkout cannot run ./gradlew at all.
 
 # Android signing files
 *.jks
@@ -65,6 +67,7 @@ fabric.properties
 # Kotlin compiled files
 *.class
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.kotlin_module
 
 # Kotlin Multiplatform
