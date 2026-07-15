@@ -2,6 +2,19 @@
 
 A calm Android alarm clock.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/alarm-list.jpg" width="280" alt="Alarm list"></td>
+    <td><img src="docs/screenshots/alarm-edit.jpg" width="280" alt="New alarm editor with the wheel time picker"></td>
+  </tr>
+  <tr>
+    <td align="center">Alarm list</td>
+    <td align="center">New alarm, wheel time picker and repeat presets</td>
+  </tr>
+</table>
+
 ## Building
 
 ```
