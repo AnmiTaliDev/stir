@@ -1,0 +1,1 @@
+-keep class dev.anmitali.stir.data.db.** { *; }

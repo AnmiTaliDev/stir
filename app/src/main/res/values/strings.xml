@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stir</string>
+
+    <string name="notification_channel_alarm_name">Alarms</string>
+    <string name="notification_channel_alarm_description">Full screen alerts when an alarm fires</string>
+
+    <string name="notification_alarm_title_default">Alarm</string>
+    <string name="notification_action_stop">Stop</string>
+    <string name="notification_action_snooze">Snooze</string>
+
+    <string name="alarm_ring_stop">Stop</string>
+    <string name="alarm_ring_snooze">Snooze for %1$d min</string>
+    <string name="alarm_ring_quiet_phase_hint">Quiet phase, cannot be stopped, alarm will get loud again soon</string>
+</resources>
