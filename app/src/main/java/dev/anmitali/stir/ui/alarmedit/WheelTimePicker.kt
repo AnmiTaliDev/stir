@@ -49,13 +49,13 @@ fun StirTimePicker(
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp),
+                .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center,
         ) {
             SelectionBand()
@@ -119,9 +119,10 @@ private fun to24Hour(displayHour: Int, amPmIndex: Int): Int {
 private fun Separator() {
     Text(
         text = ":",
-        style = MaterialTheme.typography.displaySmall,
-        color = MaterialTheme.colorScheme.onPrimaryContainer,
-        modifier = Modifier.padding(horizontal = 4.dp),
+        style = MaterialTheme.typography.headlineLarge,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(horizontal = 6.dp),
     )
 }
 
@@ -129,11 +130,11 @@ private fun Separator() {
 private fun SelectionBand() {
     Box(
         modifier = Modifier
-            .fillMaxWidth(0.86f)
+            .fillMaxWidth(0.88f)
             .height(ITEM_HEIGHT)
             .background(
-                MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.08f),
-                RoundedCornerShape(14.dp),
+                MaterialTheme.colorScheme.primaryContainer,
+                RoundedCornerShape(18.dp),
             ),
     )
 }
@@ -176,12 +177,12 @@ private fun Wheel(
             ) {
                 Text(
                     text = label(index),
-                    fontSize = if (isSelected) 26.sp else 20.sp,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                    fontSize = if (isSelected) 30.sp else 20.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.onPrimaryContainer
                     } else {
-                        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.4f)
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                     },
                 )
             }

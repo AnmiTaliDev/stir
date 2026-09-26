@@ -4,14 +4,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -19,7 +25,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,7 +83,7 @@ fun AlarmEditScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (uiState.isNew) "New alarm" else "Edit alarm") },
+                title = { Text(if (uiState.isNew) "New alarm" else "Edit alarm", style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = onDone) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -83,11 +91,16 @@ fun AlarmEditScreen(
                 },
                 actions = {
                     if (!uiState.isNew) {
-                        IconButton(onClick = { viewModel.delete() }) {
+                        FilledTonalIconButton(onClick = { viewModel.delete() }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Delete alarm")
                         }
+                        Spacer(modifier = Modifier.width(4.dp))
                     }
-                    TextButton(onClick = { viewModel.save() }, enabled = alarm != null) {
+                    Button(
+                        onClick = { viewModel.save() },
+                        enabled = alarm != null,
+                        shape = MaterialTheme.shapes.small,
+                    ) {
                         Text("Save")
                     }
                 },
@@ -103,7 +116,7 @@ fun AlarmEditScreen(
                 .fillMaxWidth()
                 .padding(padding),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
                 StirTimePicker(
@@ -122,45 +135,77 @@ fun AlarmEditScreen(
             }
 
             item {
-                OutlinedTextField(
-                    value = alarm.label,
-                    onValueChange = viewModel::setLabel,
-                    label = { Text("Label") },
-                    singleLine = true,
+                Card(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            item { SoundPickerRow(title = "Sound", soundUri = alarm.soundUri, onSoundSelected = viewModel::setSoundUri) }
-
-            item {
-                SettingRow(title = "Vibrate") {
-                    Switch(checked = alarm.vibrationEnabled, onCheckedChange = viewModel::setVibrationEnabled)
+                    shape = MaterialTheme.shapes.large,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        OutlinedTextField(
+                            value = alarm.label,
+                            onValueChange = viewModel::setLabel,
+                            label = { Text("Label") },
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.medium,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        GroupSection(
+                            groups = uiState.groups,
+                            selectedGroupId = alarm.groupId,
+                            onGroupSelected = viewModel::setGroup,
+                        )
+                    }
                 }
             }
 
-            item { VolumeRow(alarm.volume, onVolumeChange = viewModel::setVolume) }
-
-            item { SnoozeSection(alarm.snooze, onChange = viewModel::setSnooze) }
-
             item {
-                GroupSection(
-                    groups = uiState.groups,
-                    selectedGroupId = alarm.groupId,
-                    onGroupSelected = viewModel::setGroup,
-                )
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        SoundPickerRow(title = "Sound", soundUri = alarm.soundUri, onSoundSelected = viewModel::setSoundUri)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        SettingRow(title = "Vibrate") {
+                            Switch(checked = alarm.vibrationEnabled, onCheckedChange = viewModel::setVibrationEnabled)
+                        }
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        VolumeRow(alarm.volume, onVolumeChange = viewModel::setVolume)
+                    }
+                }
             }
 
             item {
-                SettingRow(title = "Persistent", subtitle = "One quiet phase you can't dismiss, then rings until stopped") {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (alarm.persistent.enabled) {
-                            TextButton(onClick = { showPersistentSheet = true }) { Text("Configure") }
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        SnoozeSection(alarm.snooze, onChange = viewModel::setSnooze)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                        SettingRow(title = "Persistent", subtitle = "One quiet phase you can't dismiss, then rings until stopped") {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (alarm.persistent.enabled) {
+                                    TextButton(onClick = { showPersistentSheet = true }) { Text("Configure") }
+                                }
+                                Switch(
+                                    checked = alarm.persistent.enabled,
+                                    onCheckedChange = { viewModel.setPersistent(alarm.persistent.copy(enabled = it)) },
+                                )
+                            }
                         }
-                        Switch(
-                            checked = alarm.persistent.enabled,
-                            onCheckedChange = { viewModel.setPersistent(alarm.persistent.copy(enabled = it)) },
-                        )
                     }
                 }
             }
@@ -185,7 +230,7 @@ private fun RepeatDaysSection(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -217,6 +262,7 @@ private fun RepeatDaysSection(
                     FilterChip(
                         selected = selected,
                         onClick = { onToggleDay(day, !selected) },
+                        shape = CircleShape,
                         label = { Text(day.getDisplayName(TextStyle.SHORT, Locale.getDefault())) },
                     )
                 }
@@ -227,7 +273,7 @@ private fun RepeatDaysSection(
 
 @Composable
 private fun RepeatPresetChip(label: String, selected: Boolean, onClick: () -> Unit) {
-    FilterChip(selected = selected, onClick = onClick, label = { Text(label) })
+    FilterChip(selected = selected, onClick = onClick, shape = MaterialTheme.shapes.small, label = { Text(label) })
 }
 
 @Composable
@@ -240,7 +286,7 @@ private fun VolumeRow(volume: Float, onVolumeChange: (Float) -> Unit) {
 
 @Composable
 private fun SnoozeSection(snooze: SnoozeConfig, onChange: (SnoozeConfig) -> Unit) {
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         SettingRow(title = "Snooze") {
             Switch(checked = snooze.enabled, onCheckedChange = { onChange(snooze.copy(enabled = it)) })
         }
@@ -270,10 +316,28 @@ private fun StepperRow(label: String, value: Int, range: IntRange, unlimitedAtZe
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, style = MaterialTheme.typography.bodyMedium)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { if (value - 1 >= range.first) onChange(value - 1) }) { Text("-", fontWeight = FontWeight.Bold) }
-            Text(if (unlimitedAtZero && value == 0) "Unlimited" else value.toString(), modifier = Modifier.padding(horizontal = 8.dp))
-            IconButton(onClick = { if (value + 1 <= range.last) onChange(value + 1) }) { Text("+", fontWeight = FontWeight.Bold) }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            FilledTonalIconButton(
+                onClick = { if (value - 1 >= range.first) onChange(value - 1) },
+                modifier = Modifier.size(36.dp),
+            ) {
+                Text("-", fontWeight = FontWeight.Bold)
+            }
+            Text(
+                if (unlimitedAtZero && value == 0) "Unlimited" else value.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 8.dp),
+            )
+            FilledTonalIconButton(
+                onClick = { if (value + 1 <= range.last) onChange(value + 1) },
+                modifier = Modifier.size(36.dp),
+            ) {
+                Text("+", fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
@@ -290,11 +354,13 @@ private fun GroupSection(
 
     Column {
         Text("Group", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(6.dp))
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
             OutlinedTextField(
                 value = selectedName,
                 onValueChange = {},
                 readOnly = true,
+                shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(MenuAnchorType.PrimaryNotEditable),

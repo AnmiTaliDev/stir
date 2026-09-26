@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -58,26 +61,28 @@ fun OnboardingScreen(onFinished: () -> Unit) {
         notificationsGranted = it
     }
 
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primaryContainer) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(28.dp),
             verticalArrangement = Arrangement.Center,
         ) {
+            Spacer(Modifier.height(24.dp))
             Text(
                 "Welcome to Stir",
                 style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(10.dp))
             Text(
                 "A calm alarm clock that works fully offline. Two quick permissions make sure your alarms actually wake you up.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(36.dp))
 
             PermissionStepCard(
                 title = "Exact alarms",
@@ -87,7 +92,7 @@ fun OnboardingScreen(onFinished: () -> Unit) {
             )
 
             if (needsNotificationPermission) {
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(14.dp))
                 PermissionStepCard(
                     title = "Notifications",
                     subtitle = "Needed to show the alarm and its Stop/Snooze actions",
@@ -101,11 +106,12 @@ fun OnboardingScreen(onFinished: () -> Unit) {
             Button(
                 onClick = onFinished,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = MaterialTheme.shapes.extraLarge,
+                shape = MaterialTheme.shapes.large,
             ) {
-                Text("Get started")
+                Text("Get started", style = MaterialTheme.typography.titleMedium)
             }
             if (!exactAlarmGranted || (needsNotificationPermission && !notificationsGranted)) {
+                Spacer(Modifier.height(4.dp))
                 TextButton(onClick = onFinished, modifier = Modifier.fillMaxWidth()) {
                     Text("Skip for now")
                 }
@@ -119,20 +125,38 @@ private fun PermissionStepCard(title: String, subtitle: String, granted: Boolean
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, style = MaterialTheme.typography.titleMedium)
+                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(2.dp))
                 Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             if (granted) {
-                Icon(Icons.Filled.Check, contentDescription = "Granted", tint = MaterialTheme.colorScheme.primary)
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.padding(start = 12.dp),
+                ) {
+                    Icon(
+                        Icons.Filled.Check,
+                        contentDescription = "Granted",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(6.dp),
+                    )
+                }
             } else {
-                TextButton(onClick = onGrant) { Text("Allow") }
+                FilledTonalButton(
+                    onClick = onGrant,
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(start = 12.dp),
+                ) {
+                    Text("Allow")
+                }
             }
         }
     }

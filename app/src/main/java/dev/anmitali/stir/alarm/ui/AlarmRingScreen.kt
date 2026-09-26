@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.anmitali.stir.R
@@ -56,7 +57,7 @@ fun AlarmRingScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
-            .padding(horizontal = 32.dp, vertical = 40.dp),
+            .padding(horizontal = 32.dp, vertical = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
@@ -65,6 +66,7 @@ fun AlarmRingScreen(
         Text(
             text = state?.label?.takeIf { it.isNotBlank() } ?: stringResource(R.string.notification_alarm_title_default),
             style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
         )
 
@@ -80,22 +82,30 @@ fun AlarmRingScreen(
                     onClick = onStop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(64.dp),
-                    shape = MaterialTheme.shapes.extraLarge,
+                        .height(72.dp),
+                    shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 ) {
-                    Text(stringResource(R.string.alarm_ring_stop), style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        stringResource(R.string.alarm_ring_stop),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
 
                 if (state?.snoozeEnabled == true) {
-                    OutlinedButton(
+                    FilledTonalButton(
                         onClick = onSnooze,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp),
-                        shape = MaterialTheme.shapes.extraLarge,
+                            .height(58.dp),
+                        shape = CircleShape,
                     ) {
-                        Text(stringResource(R.string.alarm_ring_snooze, state.snoozeDurationMinutes))
+                        Text(
+                            stringResource(R.string.alarm_ring_snooze, state.snoozeDurationMinutes),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
                     }
                 }
             }
@@ -107,8 +117,8 @@ fun AlarmRingScreen(
 private fun QuietPhaseIndicator() {
     val transition = rememberInfiniteTransition(label = "quiet-pulse")
     val alpha by transition.animateFloat(
-        initialValue = 0.25f,
-        targetValue = 0.7f,
+        initialValue = 0.2f,
+        targetValue = 0.65f,
         animationSpec = infiniteRepeatable(
             animation = tween(1600, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
@@ -118,9 +128,16 @@ private fun QuietPhaseIndicator() {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Box(
             modifier = Modifier
-                .size(20.dp)
-                .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha), CircleShape),
-        )
+                .size(48.dp)
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = alpha * 0.4f), CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = alpha), CircleShape),
+            )
+        }
         Text(
             text = stringResource(R.string.alarm_ring_quiet_phase_hint),
             style = MaterialTheme.typography.bodyLarge,
@@ -140,5 +157,10 @@ private fun LiveClock() {
         }
     }
     val formatted = remember(now) { DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(now)) }
-    Text(text = formatted, style = MaterialTheme.typography.displayLarge, modifier = Modifier.padding(top = 24.dp))
+    Text(
+        text = formatted,
+        style = MaterialTheme.typography.displayLarge,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(top = 24.dp),
+    )
 }
